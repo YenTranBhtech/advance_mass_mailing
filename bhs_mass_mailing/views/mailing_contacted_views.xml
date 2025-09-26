@@ -4,9 +4,9 @@
             <field name="name">bhs.mailing.contacted.view.tree</field>
             <field name="model">mailing.contact.contacted</field>
             <field name="arch" type="xml">
-                  <tree string="Mailing Contacted">
+                  <list string="Mailing Contacted">
                     <field name="email"/>
-                </tree>
+                  </list>
             </field>
        </record>
 
@@ -37,7 +37,7 @@
       <record model="ir.actions.act_window" id="act_bhs_mailing_contacted_view">
             <field name="name">Mailing Contacted</field>
             <field name="res_model">mailing.contact.contacted</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
       </record>
       <menuitem id="menu_bhs_mailing_contacted" name="Mailing Contacted" action="act_bhs_mailing_contacted_view" parent="mass_mailing.mass_mailing_configuration" sequence="21"/>
 </odoo>
