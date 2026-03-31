@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 {
     'name': "Mass Mailing",
-    'version': '1.0',
+    'version': '19.0.1.0',
     'summary': 'Comprehensive solutions to email marketing and related problems.',
     'category': 'Mail',
     'description': """

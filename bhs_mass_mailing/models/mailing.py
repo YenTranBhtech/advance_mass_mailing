@@ -13,29 +13,6 @@ class MassMailing(models.Model):
 
     schedule_date = fields.Datetime(copy=False)
 
-    # def _compute_next_departure(self):
-    #     cron_next_call = self.env.ref('mass_mailing.ir_cron_mass_mailing_queue').sudo().nextcall
-    #     str2dt = fields.Datetime.from_string
-    #     cron_time = str2dt(cron_next_call)
-    #     for mass_mailing in self:
-    #         if mass_mailing.schedule_date or mass_mailing.schedule_type == 'now':
-    #             schedule_date = str2dt(mass_mailing.schedule_date or fields.Datetime.now())
-    #             mass_mailing.next_departure = min(schedule_date, cron_time)
-    #         else:
-    #             mass_mailing.next_departure = cron_time
-    #
-    # def write(self, vals):
-    #     res = super(MassMailing, self).write(vals)
-    #     if vals.get('schedule_date'):
-    #         mailing_cron = self.sudo().env.ref('mass_mailing.ir_cron_mass_mailing_queue')
-    #         schedule_date = fields.Datetime.from_string(vals['schedule_date']) if isinstance(vals['schedule_date'], str) else vals['schedule_date']
-    #         if mailing_cron.nextcall < schedule_date:
-    #             mailing_cron.write({
-    #                 'nextcall': schedule_date + timedelta(hours=6),
-    #             })
-    #     return res
-
-
 class MailingContact(models.Model):
 
     _inherit = 'mailing.contact'
@@ -55,7 +32,6 @@ class MailingContact(models.Model):
         }
 
     def write(self, vals):
-        # print(vals.get('email'))
         return super(MailingContact, self).write(vals)
 
     def check_blacklist_domain(self, email, blacklist_domain):
@@ -79,17 +55,6 @@ class MailingContact(models.Model):
 
             blacklist_domains = self.env['mailing.blacklist.domain'].sudo().search([])
             blacklist_domain_vals = blacklist_domains.mapped('name')
-
-            # update existing contacts to the current mailing list
-            # if self.env.context.get('default_list_ids') or (self.env.context.get('active_model') == 'mailing.list' and self.env.context.get('active_ids')):
-            #     MailingSubscription = self.env['mailing.contact.subscription']
-            #     list_ids = self.env.context.get('default_list_ids') or self.env.context.get('active_ids')
-            #     sub_vals_list = []
-            #     for list_id in list_ids:
-            #         # avoid existing subscriptions
-            #         existing_sub_contacts = MailingSubscription.sudo().search([('list_id', '=', list_id), ('contact_id', 'in', existing_contacts.ids)]).mapped('contact_id')
-            #         sub_vals_list += [{'contact_id': contact_id, 'list_id': list_id} for contact_id in existing_contacts.ids if contact_id not in existing_sub_contacts.ids]
-            #     MailingSubscription.create(sub_vals_list)
 
             vals_list_add = [vals for vals in vals_list if vals.get('email') not in existing_emails]
             vals_add_blacklist = [vals for vals in vals_list if self.check_blacklist_domain(vals.get('email'), blacklist_domain_vals)]
@@ -122,7 +87,7 @@ class MailingContact(models.Model):
             vals_blacklist = [vals.get('email') for vals in vals_list if vals.get('email') in blacklist_emails]
 
             retval = existing_contacts + super(MailingContact, self).create(vals_list_add)
-            # xoa cac contact là blacklist email
+            # remove blacklist email contacts
             self.remove_blacklist_contacts(vals_blacklist)
 
             return retval
@@ -172,16 +137,12 @@ class MailingContact(models.Model):
             )
             if response.get('SuppressedDestinationSummaries'):
                 suppressed_email = [res['EmailAddress'] for res in response.get('SuppressedDestinationSummaries')]
-                # thêm vào blacklist
+                # add to blacklist
                 for suppressed_mail_contact in suppressed_email:
                     self.env['mail.blacklist'].sudo()._add(suppressed_mail_contact)
 
-                # xoa cac contact là blacklist moi duoc them vao danh sach
+                # remove blacklist contacts
                 self.remove_blacklist_contacts(suppressed_email)
-
-                # suppressed_mail_contact = self.sudo().search([('email', 'in', suppressed_email)])
-                # if suppressed_mail_contact:
-                #     suppressed_mail_contact.unlink()
 
     def add_to_blacklist(self):
         for contact in self:

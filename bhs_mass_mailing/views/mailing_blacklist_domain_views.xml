@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!--  MAILING BLACKLIST DOMAIN !-->
     <record id="bh_mailing_blacklist_domain_tree" model="ir.ui.view">

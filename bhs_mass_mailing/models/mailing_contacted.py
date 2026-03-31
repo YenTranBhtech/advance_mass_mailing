@@ -37,6 +37,5 @@ class BHMailingContacted(models.Model):
             bl_entries = dict(self._cr.fetchall())
             to_create = [v for v in new_values if v['email'] not in bl_entries]
 
-        # TODO DBE Fixme : reorder ids according to incoming ids.
         results = super(BHMailingContacted, self).create(to_create)
         return self.env['mailing.contact.contacted'].browse(bl_entries.values()) | results

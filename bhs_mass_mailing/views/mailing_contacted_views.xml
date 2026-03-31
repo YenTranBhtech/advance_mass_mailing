@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
        <record model="ir.ui.view" id="bhs_mailing_contacted_view_tree">
             <field name="name">bhs.mailing.contacted.view.tree</field>
