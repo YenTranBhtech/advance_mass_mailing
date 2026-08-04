@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 {
-    'name': "Mass Mailing",
+    'name': "Mass Mailing Optimizer",
     'version': '19.0.1.0',
     'summary': 'Comprehensive solutions to email marketing and related problems.',
     'category': 'Mail',
@@ -27,5 +27,7 @@
     'installable': True,
     'application': True,
     'auto_install': False,
-    'license': 'LGPL-3'
+    'license': 'OPL-1',
+    'price': '12.00',
+    'currency': 'USD',
 }
